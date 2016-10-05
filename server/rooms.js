@@ -1,34 +1,33 @@
 
 let rooms = {}
 
-const newRoom = (_, { user }) => {
+const newRoom = (user) => {
   const id = Math.random().toString(36).slice(2)
-  if(rooms[id]) return newRoom(_, { user })
+  if(rooms[id]) return newRoom(user)
 
-  if(!user) user = 'Admin'
+  if(!user) user = { userName: 'Admin' }
 
   rooms[id] = {
     id,
     admin: user,
-    users: {
-      [user]: {}
-    }
+    users: [user],
+    stories: []
   }
   
   return rooms[id]
 } 
 
-const joinRoom = ({ roomId, user }) => {
+const joinRoom = (roomId, user) => {
 
   if(!rooms[roomId]) throw "No room with id " + roomId
-  rooms[roomId].users[user] = {}
-  return rooms[roomId].users
+  rooms[roomId].users.push(user)
+  return rooms[roomId]
 }
 
-
-
 export default {
-  new: (params, query) => newRoom(params, query),
-  reset: () => rooms = Immutable.Map(),
-  join: (params) => joinRoom(params)
+  rooms: () => rooms,
+  reset: () => rooms = {},
+
+  new: newRoom,
+  join: joinRoom,
 }
