@@ -24,5 +24,5 @@ const server = app.listen(4000, function () {
 
 const io = new socketServer(server)
 
-io.on('connection', (socket) => play(socket))
+io.on('connection', (socket) => play(socket, io))
 
